@@ -9,7 +9,7 @@ app.get('/api/text/?', async (req, res) => {
     const { n, t } = req.query;
     console.log("req object received is: " + req);
     console.log("query parameter in req object: " + req.query);
-    console.log("n and t extracted are n: " + n + " t: " + t);
+    console.log("n and t extracted are n: " + n + " t: " + t); chrom
     try {
         const response = await axios.get(`https://loremipsum.io/generator?n=${n}&t=${t}`);
         console.log("resonse receoved: " + response)

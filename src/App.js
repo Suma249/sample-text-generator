@@ -2,6 +2,8 @@ import axios from 'axios';
 import './App.css';
 import React, { Component } from 'react'
 import Output from './components/Output';
+import Select from './components/controls/Select';
+import Text from './components/controls/Text'
 
 export default class App extends Component {
   constructor(props) {
@@ -13,17 +15,11 @@ export default class App extends Component {
     }
   }
   getSampleText() {
-    axios.get('http://localhost:5000/api/text?n=' + this.state.paras + '&t=p')
-      .then(async (response) => {
-        const data = response.data;
-        console.log("response received: " + response)
-        if (Array.isArray(data) && data.length > 0) {
-          this.setState({ text: data.join('\n\n') })
-        } else {
-          this.setState({ text: "no text generated" })
-        }
-        this.setState({ text: response.data }, function () {
-          console.log("logged once the setstate has updated the text state once the get call is completed: " + this.state);
+    console.log("change in state properties, hence making a call to api to bring text")
+    axios.get('https://loremipsum.io/generator?n=' + this.state.paras + '&t=p')
+      .then(response => {
+        this.setState({ text: response.data.text }, function () {
+          console.log(this.state.text)
         })
       })
       .catch(err => {
@@ -33,11 +29,28 @@ export default class App extends Component {
   componentDidMount() {
     this.getSampleText();
   }
+
+  handleType(x) {
+    this.setState({ type: x }, this.getSampleText)
+  }
+  handleParas(x) {
+    this.setState({ type: x }, this.getSampleText)
+  }
   render() {
     return (
-      <div className="App">
-        hello
-        <br />
+      <div className="App container">
+        <h1 className='text-center'>ReactJS Sample Text Generator</h1>
+        <hr />
+        <hr />
+        <form className='form-inline'>
+          <div className='form-group'>
+            <Select value={this.state.type} onChange={this.handleType.bind(this)} />
+          </div>
+          <div className='form-group'>
+            <Text value={this.state.paras} onChange={this.handleParas.bind(this)} />
+          </div>
+        </form>
+        <br /><br />
         <Output value={this.state.text} />
       </div>
     )
